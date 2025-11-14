@@ -498,6 +498,11 @@ const getListAgents = async (searchParameter) => {
     if (agent.author) {
       agent.author = agent.author.toString();
     }
+    // console.log(config.questions)
+    // 1. retrieve agent questions from yaml config
+    // questions [{name: "Some Agent Name", questions: [...], ... , ...}]
+    // agent.questions = questions.filter((item, index) => item['name'] == agent.name.toString())
+    // handle situations when questions are none
     return agent;
   });
 
