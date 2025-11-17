@@ -147,9 +147,20 @@ const getAgentHandler = async (req, res) => {
   }
 };
 
+const getAgentUsage = async (agent) => {
+  const conversations = await getConversations({ agent_id: agent.id });
+  var count = 0;
+
+  for (const convo of conversations) {
+    var transactions = await getTransactions({ conversationId: convo.conversationId, tokenType: "prompt" });
+    count += transactions.length;
+  }
+  return count;
+}
+
 /**
  * Retrieves an Agent by ID.
- * @route GET /Agents/:id
+ * @route GET /Agents/:id/usage
  * @param {object} req - Express Request
  * @param {object} req.params - Request params
  * @param {string} req.params.id - Agent identifier.
@@ -178,14 +189,7 @@ const getAgentUsageHandler = async (req, res) => {
       return res.status(404).json({ error: 'Agent not found' });
     }
 
-    const conversations = await getConversations({ agent_id: agent.id, author });
-    logger.info(conversations);
-    var count = 0;
-
-    for (const convo of conversations) {
-      var transactions = await getTransactions({ conversationId: convo.conversationId, tokenType: "prompt" });
-      count += transactions.length;
-    }
+    var count = getAgentUsage(agent);
 
     return res.status(200).json(count);
   } catch (error) {
@@ -193,6 +197,33 @@ const getAgentUsageHandler = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+/**
+ * Retrieves an Agent by ID.
+ * @route GET /Agents/usage
+ * @param {object} req - Express Request
+ * @param {object} req.params - Request params
+ * @param {object} req.user - Authenticated user information
+ * @param {string} req.user.id - User ID
+ * @returns {Promise<int>} 200 - success response - application/json
+ * @returns {Error} 404 - Agent not found
+ */
+const getListAgentsUsageHandler = async (req, res) => {
+  try {
+    const agents = await getListAgents({
+      author: req.user.id,
+    });
+
+    var count = 0;
+    for (const agent of agents.data) {
+      count += await getAgentUsage(agent);
+    }
+    return res.status(200).json(count);
+  } catch (error) {
+    logger.error('[/Agents] Error retrieving agents usage', error);
+    res.status(500).json({ error: error.message });
+  }
+}
 
 /**
  * Updates an Agent.
@@ -593,6 +624,7 @@ module.exports = {
   duplicateAgent: duplicateAgentHandler,
   deleteAgent: deleteAgentHandler,
   getListAgents: getListAgentsHandler,
+  getListAgentsUsage: getListAgentsUsageHandler,
   uploadAgentAvatar: uploadAgentAvatarHandler,
   revertAgentVersion: revertAgentVersionHandler,
 };

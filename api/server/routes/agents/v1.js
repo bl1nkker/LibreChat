@@ -53,6 +53,14 @@ router.use('/tools', tools);
 router.post('/', checkAgentCreate, v1.createAgent);
 
 /**
+ * Returns a list of agents.
+ * @route GET /agents/usage
+ * @param {string} req.query - The agent list parameters for pagination and sorting.
+ * @returns {number} 200 - success response - application/json
+ */
+router.get('/usage', checkAgentAccess, v1.getListAgentsUsage);
+
+/**
  * Retrieves an agent.
  * @route GET /agents/:id
  * @param {string} req.params.id - Agent identifier.
@@ -98,7 +106,7 @@ router.post('/:id/revert', checkGlobalAgentShare, v1.revertAgentVersion);
  * Retrieves an agent.
  * @route GET /agents/:id
  * @param {string} req.params.id - Agent identifier.
- * @returns {int} 200 - Success response - application/json
+ * @returns {number} 200 - Success response - application/json
  */
 router.get('/:id/usage', checkAgentAccess, v1.getAgentUsage);
 
