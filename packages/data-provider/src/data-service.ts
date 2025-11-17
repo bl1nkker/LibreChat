@@ -454,6 +454,14 @@ export const listAgents = (params: a.AgentListParams): Promise<a.AgentListRespon
   );
 };
 
+export const listAgentsUsage = (): Promise<number> => {
+  return request.get(
+    endpoints.agents({
+      path: 'usage',
+    }),
+  );
+};
+
 export const revertAgentVersion = ({
   agent_id,
   version_index,

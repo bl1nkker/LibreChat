@@ -1,8 +1,6 @@
-import React, { useState } from 'react';
-import { useGetStartupConfig, useListAgentsQuery, useUpdateAgentMutation } from '~/data-provider';
+import React, { useEffect, useState } from 'react';
+import { useGetStartupConfig, useListAgentsQuery, useListAgentsUsageQuery, useUpdateAgentMutation } from '~/data-provider';
 import { processAgentOption } from '~/utils';
-import { AgentCreationModal } from '~/components/Agents';
-import { AgentEditModal } from '~/components/Agents';
 import { useOutletContext } from 'react-router-dom';
 import type { ContextType } from '~/common';
 import { Button, useMediaQuery } from '@librechat/client';
@@ -33,6 +31,9 @@ export default function AgentsDashboard() {
         }),
       ),
   });
+  const { data: agentsUsage = null } = useListAgentsUsageQuery({
+    select: (res) => res || 0,
+  });
 
   const [selectedAgent, setSelectedAgent] = useState<any | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -40,6 +41,10 @@ export default function AgentsDashboard() {
   const { navVisible, setNavVisible } = useOutletContext<ContextType>();
 
   const chatHelpers = useChatHelpers();
+
+  useEffect(() => {
+    console.log('Agents usage data:', agentsUsage);
+  });
 
   const handleOpenModal = (agent: any) => {
     setIsCreate(false);
@@ -70,7 +75,7 @@ export default function AgentsDashboard() {
         <div className="relative h-full w-full rounded-lg bg-transparent p-8 text-sm text-text-primary">
           <div className="absolute right-8 top-8 flex gap-8">
             <div className="flex flex-col items-center">
-              <span className="text-4xl font-bold text-blue-600 dark:text-blue-300">0</span>
+              <span className="text-4xl font-bold text-blue-600 dark:text-blue-300">{ agentsUsage }</span>
               <span className="text-sm text-gray-500 dark:text-gray-400">Total Uses</span>
             </div>
             <div className="flex flex-col items-center">
