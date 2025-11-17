@@ -76,8 +76,20 @@ const getConvoFiles = async (conversationId) => {
   }
 };
 
+
+async function getConversations(filter) {
+  try {
+    return await Conversation.find(filter).lean();
+  } catch (error) {
+    logger.error('Error querying conversations:', error);
+    throw error;
+  }
+}
+
+
 module.exports = {
   getConvoFiles,
+  getConversations,
   searchConversation,
   deleteNullOrEmptyConversations,
   /**

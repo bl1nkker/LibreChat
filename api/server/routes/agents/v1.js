@@ -95,6 +95,14 @@ router.delete('/:id', checkAgentCreate, v1.deleteAgent);
 router.post('/:id/revert', checkGlobalAgentShare, v1.revertAgentVersion);
 
 /**
+ * Retrieves an agent.
+ * @route GET /agents/:id
+ * @param {string} req.params.id - Agent identifier.
+ * @returns {int} 200 - Success response - application/json
+ */
+router.get('/:id/usage', checkAgentAccess, v1.getAgentUsage);
+
+/**
  * Returns a list of agents.
  * @route GET /agents
  * @param {AgentListParams} req.query - The agent list parameters for pagination and sorting.
