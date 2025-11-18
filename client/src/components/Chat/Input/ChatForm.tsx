@@ -34,6 +34,7 @@ import BadgeRow from './BadgeRow';
 import Mention from './Mention';
 import store from '~/store';
 import { riveInputState, riveThinkingState } from '~/store/rive-inputs';
+import { sidePanelCollapsedState } from '~/common/sidePanel';
 
 const ChatForm = memo(({ index = 0 }: { index?: number }) => {
   const submitButtonRef = useRef<HTMLButtonElement>(null);
@@ -220,12 +221,15 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
     [isCollapsed, isMoreThanThreeRows],
   );
 
+  const collapsed = useRecoilValue(sidePanelCollapsedState);
+
   return (
     <form
       onSubmit={onSubmit}
       className={cn(
         'mx-auto flex w-full flex-row gap-3 transition-[max-width] duration-300 sm:px-2',
         maximizeChatSpace ? 'max-w-full' : 'md:max-w-3xl xl:max-w-4xl',
+        !collapsed && '2xl:pr-28',
         centerFormOnLanding &&
           (conversationId == null || conversationId === Constants.NEW_CONVO) &&
           !isSubmitting &&

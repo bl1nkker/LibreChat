@@ -1,7 +1,9 @@
 import { useRive, useStateMachineInput } from '@rive-app/react-canvas';
 import { useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
+import { sidePanelCollapsedState } from '~/common/sidePanel';
 import { riveInputState, riveThinkingState } from '~/store/rive-inputs';
+import { cn } from '~/utils';
 
 function RiveAnimateElement() {
   const STATE_MACHINE = 'State Machine 1';
@@ -23,6 +25,8 @@ function RiveAnimateElement() {
 
   const riveInput = useRecoilValue(riveInputState);
   const riveThinking = useRecoilValue(riveThinkingState);
+
+  const collapsed = useRecoilValue(sidePanelCollapsedState);
 
   useEffect(() => {
     if (!rive || !wave || !stopWave) return;
@@ -55,7 +59,12 @@ function RiveAnimateElement() {
   }, [riveThinking, isThinking, stopThinking]);
 
   return (
-    <div className="mascot-btn-wrapper absolute -right-0 bottom-5 z-50 ml-5 hidden size-fit 2xl:flex">
+    <div
+      className={cn(
+        'mascot-btn-wrapper absolute bottom-5 right-0 z-50 ml-5 hidden size-fit 2xl:flex',
+        !collapsed && '-right-4',
+      )}
+    >
       <div className="mascot-wrapper size-40">
         <RiveComponent />
       </div>
