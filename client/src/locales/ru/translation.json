@@ -809,6 +809,7 @@
   "com_ui_special_var_current_date": "Текущая дата",
   "com_ui_special_var_current_datetime": "Текущая дата и время",
   "com_ui_special_var_current_user": "Текущий пользователь",
+  "com_ui_special_var_current_user_email": "Имейл текущего пользователя",
   "com_ui_special_var_iso_datetime": "Дата и время в формате UTC ISO",
   "com_ui_special_variables": "Специальные переменные:",
   "com_ui_special_variables_more_info": "Вы можете выбрать специальные переменные из выпадающего списка: `{{current_date}}` (сегодняшняя дата и день недели), `{{current_datetime}}` (местные дата и время), `{{utc_iso_datetime}}` (дата и время в формате UTC ISO), `{{current_user}}` (имя вашего аккаунта).",
