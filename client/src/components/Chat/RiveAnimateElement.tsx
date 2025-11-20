@@ -48,7 +48,7 @@ function RiveAnimateElement() {
     requestAnimationFrame(() => {
       riveInput.trim().length > 0 ? isRead.fire() : stopRead.fire();
     });
-  }, [riveInput, isRead, stopRead]);
+  }, [rive, riveInput, isRead, stopRead]);
 
   useEffect(() => {
     if (!rive || !isThinking || !stopThinking) return;
@@ -56,7 +56,7 @@ function RiveAnimateElement() {
     requestAnimationFrame(() => {
       riveThinking ? isThinking.fire() : stopThinking.fire();
     });
-  }, [riveThinking, isThinking, stopThinking]);
+  }, [rive, riveThinking, isThinking, stopThinking]);
 
   return (
     <div

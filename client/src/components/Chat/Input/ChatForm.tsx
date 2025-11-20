@@ -133,7 +133,7 @@ const ChatForm = memo(({ index = 0 }: { index?: number }) => {
 
   const { submitMessage, submitPrompt } = useSubmitMessage();
 
-  const [riveInput, setRiveInput] = useRecoilState(riveInputState);
+  const [r, setRiveInput] = useRecoilState(riveInputState);
 
   const handleKeyUp = useHandleKeyUp({
     index,
