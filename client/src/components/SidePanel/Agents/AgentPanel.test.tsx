@@ -27,7 +27,17 @@ jest.mock('~/store/toast', () => ({
   }),
 }));
 
-jest.mock('~/store', () => {});
+jest.mock('recoil', () => ({
+  ...jest.requireActual('recoil') as any,
+  useRecoilValue: jest.fn(),
+}));
+
+jest.mock('~/store', () => ({
+  __esModule: true,
+  default: {
+    queriesEnabled: 'queriesEnabled', // key reference, can be anything
+  },
+}));
 
 // Mock the data service to control network responses
 jest.mock('librechat-data-provider', () => {
@@ -90,6 +100,7 @@ jest.mock('~/hooks', () => ({
   useSelectAgent: () => ({ onSelect: jest.fn() }),
   useLocalize: () => (key: string) => key,
   useAuthContext: () => ({ user: { id: 'user-123', role: 'USER' } }),
+  useHasAccess: () => true,
 }));
 
 jest.mock('~/Providers/AgentPanelContext', () => ({
