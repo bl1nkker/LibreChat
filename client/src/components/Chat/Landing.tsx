@@ -6,7 +6,9 @@ import { useChatContext, useAgentsMapContext, useAssistantsMapContext } from '~/
 import { useGetEndpointsQuery, useGetStartupConfig } from '~/data-provider';
 import ConvoIcon from '~/components/Endpoints/ConvoIcon';
 import { useLocalize, useAuthContext, useSelectAgent } from '~/hooks';
-import { getIconEndpoint, getEntity } from '~/utils';
+import { getIconEndpoint, getEntity, cn } from '~/utils';
+import { useSubmitMessage } from '~/hooks';
+import { useChatFormContext } from '~/Providers';
 
 function getAvatarUrl(avatar?: { filepath?: string; source?: string }) {
   if (!avatar?.filepath) return undefined;
@@ -41,11 +43,19 @@ export default function Landing({ centerFormOnLanding }: { centerFormOnLanding: 
   const { data: endpointsConfig } = useGetEndpointsQuery();
   const { user } = useAuthContext();
   const localize = useLocalize();
+  const methods = useChatFormContext();
+  const { submitMessage } = useSubmitMessage();
 
   const [textHasMultipleLines, setTextHasMultipleLines] = useState(false);
   const [lineCount, setLineCount] = useState(1);
   const [contentHeight, setContentHeight] = useState(0);
   const contentRef = useRef<HTMLDivElement>(null);
+
+  const handleSendQuestion = (text: string) => {
+    methods.setValue('text', text);
+
+    submitMessage({ text });
+  };
 
   const endpointType = useMemo(() => {
     let ep = conversation?.endpoint ?? '';
@@ -189,12 +199,48 @@ export default function Landing({ centerFormOnLanding }: { centerFormOnLanding: 
       </div>
     );
   };
-  // -------------------------------------------
+
+  const renderAgentQuestions = () => {
+    if (!isAgent || !entity) return null;
+
+    const questions = entity.questions;
+
+    return (
+      <div
+        className={cn(
+          'agent-questions mx-6 mb-5 mt-12 max-w-3xl',
+          'grid grid-cols-2 gap-4 xl:grid-cols-4',
+        )}
+      >
+        {questions?.map((question, index) => (
+          <div
+            key={index}
+            className={cn(
+              'agent-question-item rounded-2xl border px-3 pb-4 pt-3',
+              'cursor-pointer shadow-sm hover:bg-gray-20/30 dark:hover:bg-gray-20/10',
+              'transition-all duration-300 ease-in-out',
+              index > 1 ? 'hidden sm:block' : '',
+            )}
+            onClick={() => handleSendQuestion(question)}
+          >
+            <div
+              className={cn(
+                'question-text break-word line-clamp-3 overflow-hidden text-[15px]',
+                'text-gray-600 dark:text-white',
+              )}
+            >
+              {question}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  };
 
   return (
-    <div>
+    <div className="mb-20 lg:mb-0">
       <div
-        className={`flex h-full transform-gpu flex-col items-center justify-center pb-16 transition-all duration-200 ${centerFormOnLanding ? 'max-h-full sm:max-h-0' : 'max-h-full'} ${getDynamicMargin}`}
+        className={`flex transform-gpu flex-col items-center justify-center pb-16 transition-all duration-200 ${centerFormOnLanding ? 'max-h-full sm:max-h-0' : 'max-h-full'} ${getDynamicMargin}`}
       >
         <div ref={contentRef} className="flex flex-col items-center gap-0 p-2">
           <div
@@ -262,6 +308,7 @@ export default function Landing({ centerFormOnLanding }: { centerFormOnLanding: 
         </div>
       </div>
       {renderAgentsList()}
+      {renderAgentQuestions()}
     </div>
   );
 }
