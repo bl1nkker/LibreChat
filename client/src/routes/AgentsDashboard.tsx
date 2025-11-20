@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useGetStartupConfig, useListAgentsQuery, useListAgentsUsageQuery, useUpdateAgentMutation } from '~/data-provider';
 import { processAgentOption } from '~/utils';
 import { useOutletContext } from 'react-router-dom';
@@ -41,10 +41,6 @@ export default function AgentsDashboard() {
   const { navVisible, setNavVisible } = useOutletContext<ContextType>();
 
   const chatHelpers = useChatHelpers();
-
-  useEffect(() => {
-    console.log('Agents usage data:', agentsUsage);
-  });
 
   const handleOpenModal = (agent: any) => {
     setIsCreate(false);
