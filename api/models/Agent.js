@@ -15,6 +15,11 @@ const { getCachedTools } = require('~/server/services/Config');
 const getLogStores = require('~/cache/getLogStores');
 const { getActions } = require('./Action');
 const { Agent } = require('~/db/models');
+const fs = require('fs');
+const yaml = require('js-yaml');
+
+const configFile = fs.readFileSync('./librechat.yaml', 'utf8');
+const config = yaml.load(configFile);
 
 /**
  * Create an agent with the provided data.
@@ -479,6 +484,7 @@ const getListAgents = async (searchParameter) => {
     delete globalQuery.author;
     query = { $or: [globalQuery, query] };
   }
+
   const agents = (
     await Agent.find(query, {
       id: 1,
@@ -498,6 +504,13 @@ const getListAgents = async (searchParameter) => {
     if (agent.author) {
       agent.author = agent.author.toString();
     }
+
+    const list =  config.interface?.agentsFAQ || []
+
+    const foundItems = list.find((item) => item.name === agent.name.toString())
+
+    agent.questions = Array.isArray(foundItems?.questions) ? foundItems.questions: [];
+    
     return agent;
   });
 

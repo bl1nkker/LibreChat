@@ -92,6 +92,7 @@ export type Assistant = {
   object: string;
   tools?: FunctionTool[];
   tool_resources?: ToolResources;
+  questions?: string[];
 };
 
 export type TAssistantsMap = Record<AssistantsEndpoint, Record<string, Assistant>>;
@@ -225,6 +226,7 @@ export type Agent = {
   artifacts?: ArtifactModes;
   recursion_limit?: number;
   version?: number;
+  questions?: string[];
 };
 
 export type TAgentsMap = Record<string, Agent | undefined>;
@@ -241,7 +243,13 @@ export type AgentCreateParams = {
   model_parameters: AgentModelParameters;
 } & Pick<
   Agent,
-  'agent_ids' | 'end_after_tools' | 'hide_sequential_outputs' | 'artifacts' | 'recursion_limit' | 'conversation_starters' | 'isCollaborative'
+  | 'agent_ids'
+  | 'end_after_tools'
+  | 'hide_sequential_outputs'
+  | 'artifacts'
+  | 'recursion_limit'
+  | 'conversation_starters'
+  | 'isCollaborative'
 >;
 
 export type AgentUpdateParams = {
