@@ -54,6 +54,31 @@ export const useListAgentsQuery = <TData = t.AgentListResponse>(
 };
 
 /**
+ * Hook for listing all Agents, with optional parameters provided for pagination and sorting
+ */
+export const useListAgentsUsageQuery = <TData = number>(
+  config?: UseQueryOptions<number, unknown, TData>,
+): QueryObserverResult<TData> => {
+  const queryClient = useQueryClient();
+  const endpointsConfig = queryClient.getQueryData<t.TEndpointsConfig>([QueryKeys.endpoints]);
+
+  const enabled = !!endpointsConfig?.[EModelEndpoint.agents];
+  return useQuery<number, unknown, TData>(
+    [QueryKeys.agentsUsage],
+    () => dataService.listAgentsUsage(),
+    {
+      staleTime: 1000 * 5,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      refetchOnMount: false,
+      retry: false,
+      ...config,
+      enabled: config?.enabled !== undefined ? config.enabled && enabled : enabled,
+    },
+  );
+};
+
+/**
  * Hook for retrieving details about a single agent
  */
 export const useGetAgentByIdQuery = (
