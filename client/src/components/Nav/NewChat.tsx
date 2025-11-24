@@ -1,13 +1,11 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
-import type { TMessage } from 'librechat-data-provider';
-import { QueryKeys, Constants, getConfigDefaults } from 'librechat-data-provider';
-import { NewChatIcon, MobileSidebar, Sidebar, TooltipAnchor, Button } from '@librechat/client';
+import { QueryKeys } from 'librechat-data-provider';
+import { TooltipAnchor, NewChatIcon, MobileSidebar, Sidebar, Button } from '@librechat/client';
 import { useLocalize, useNewConvo } from '~/hooks';
+import { clearMessagesCache } from '~/utils';
 import store from '~/store';
-import { useGetStartupConfig } from '~/data-provider';
-const defaultInterface = getConfigDefaults().interface;
 
 export default function NewChat({
   index = 0,
@@ -23,11 +21,6 @@ export default function NewChat({
   headerButtons?: React.ReactNode;
 }) {
   const queryClient = useQueryClient();
-  const { data: startupConfig } = useGetStartupConfig();
-  const interfaceConfig = useMemo(
-    () => startupConfig?.interface ?? defaultInterface,
-    [startupConfig],
-  );
   /** Note: this component needs an explicit index passed if using more than one */
   const { newConversation: newConvo } = useNewConvo(index);
   const navigate = useNavigate();
@@ -40,10 +33,7 @@ export default function NewChat({
         window.open('/c/new', '_blank');
         return;
       }
-      queryClient.setQueryData<TMessage[]>(
-        [QueryKeys.messages, conversation?.conversationId ?? Constants.NEW_CONVO],
-        [],
-      );
+      clearMessagesCache(queryClient, conversation?.conversationId);
       queryClient.invalidateQueries([QueryKeys.messages]);
       newConvo();
       navigate('/c/new', { state: { focusChat: true } });
@@ -72,15 +62,9 @@ export default function NewChat({
             </Button>
           }
         />
-        <div className="h-10 w-40 bg-cover">
-          <img
-            src={`/assets/${interfaceConfig.companyLogo}`}
-            className="h-full w-full object-contain"
-            alt={'company-logo-image'}
-          />
-        </div>
-        <div className="flex">
+        <div className="flex gap-0.5">
           {headerButtons}
+
           <TooltipAnchor
             description={localize('com_ui_new_chat')}
             render={
@@ -92,7 +76,7 @@ export default function NewChat({
                 className="rounded-full border-none bg-transparent p-2 hover:bg-surface-hover md:rounded-xl"
                 onClick={clickHandler}
               >
-                <NewChatIcon className="icon-md md:h-6 md:w-6" />
+                <NewChatIcon className="icon-lg text-text-primary" />
               </Button>
             }
           />
