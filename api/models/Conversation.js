@@ -1,6 +1,5 @@
 const { logger } = require('@librechat/data-schemas');
 const { createTempChatExpirationDate } = require('@librechat/api');
-const { getCustomConfig } = require('~/server/services/Config/getCustomConfig');
 const { getMessages, deleteMessages } = require('./Message');
 const { Conversation } = require('~/db/models');
 
@@ -114,8 +113,8 @@ module.exports = {
 
       if (req?.body?.isTemporary) {
         try {
-          const customConfig = await getCustomConfig();
-          update.expiredAt = createTempChatExpirationDate(customConfig);
+          const appConfig = req.config;
+          update.expiredAt = createTempChatExpirationDate(appConfig?.interfaceConfig);
         } catch (err) {
           logger.error('Error creating temporary chat expiration date:', err);
           logger.info(`---\`saveConvo\` context: ${metadata?.context}`);
@@ -187,7 +186,7 @@ module.exports = {
 
     if (search) {
       try {
-        const meiliResults = await Conversation.meiliSearch(search);
+        const meiliResults = await Conversation.meiliSearch(search, { filter: `user = "${user}"` });
         const matchingIds = Array.isArray(meiliResults.hits)
           ? meiliResults.hits.map((result) => result.conversationId)
           : [];

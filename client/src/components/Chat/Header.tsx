@@ -16,6 +16,7 @@ const defaultInterface = getConfigDefaults().interface;
 
 export default function Header() {
   const { data: startupConfig } = useGetStartupConfig();
+
   const interfaceConfig = useMemo(
     () => startupConfig?.interface ?? defaultInterface,
     [startupConfig],
@@ -46,14 +47,7 @@ export default function Header() {
                 : 'pointer-events-none translate-x-[-100px] opacity-0'
             }`}
           >
-            <OpenSidebar navVisible={navVisible} setNavVisible={setNavVisible} />
-            <div className="h-10 w-40 bg-cover">
-              <img
-                src={`/assets/${interfaceConfig.companyLogo}`}
-                className="h-full w-full object-contain"
-                alt={'company-logo-image'}
-              />
-            </div>
+            <OpenSidebar setNavVisible={setNavVisible} className="max-md:hidden" />
             <HeaderNewChat />
           </div>
           <div

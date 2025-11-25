@@ -22,12 +22,12 @@ export enum QueryKeys {
   agents = 'agents',
   agentsUsage = 'agentsUsage',
   agent = 'agent',
-  endpointsConfigOverride = 'endpointsConfigOverride',
   files = 'files',
   fileConfig = 'fileConfig',
   tools = 'tools',
   toolAuth = 'toolAuth',
   toolCalls = 'toolCalls',
+  mcpTools = 'mcpTools',
   mcpConnectionStatus = 'mcpConnectionStatus',
   mcpAuthValues = 'mcpAuthValues',
   agentTools = 'agentTools',
@@ -44,6 +44,8 @@ export enum QueryKeys {
   promptGroup = 'promptGroup',
   categories = 'categories',
   randomPrompts = 'randomPrompts',
+  agentCategories = 'agentCategories',
+  marketplaceAgents = 'marketplaceAgents',
   roles = 'roles',
   conversationTags = 'conversationTags',
   health = 'health',
@@ -51,6 +53,11 @@ export enum QueryKeys {
   banner = 'banner',
   /* Memories */
   memories = 'memories',
+  principalSearch = 'principalSearch',
+  accessRoles = 'accessRoles',
+  resourcePermissions = 'resourcePermissions',
+  effectivePermissions = 'effectivePermissions',
+  graphToken = 'graphToken',
 }
 
 // Dynamic query keys that require parameters
